@@ -177,7 +177,13 @@ export default class GnocchiDatasource {
           return self._gnocchi_request(resource_req).then(function(resource) {
             default_measures_req.url = ('v1/resource/' + resource_type+ '/' +
                                         resource_id + '/metric/' + metric_regex+ '/measures');
-            return self._retrieve_measures(self._compute_label(label, resource), default_measures_req);
+            var final_label;
+            if ( label === "$metric") {
+              final_label = metric_name;
+            } else {
+              final_label = self._compute_label(label, resource);
+            }
+            return self._retrieve_measures(final_label, default_measures_req);
           });
         } else if (target.queryMode === "metric") {
           default_measures_req.url = 'v1/metric/' + metric_id + '/measures';
